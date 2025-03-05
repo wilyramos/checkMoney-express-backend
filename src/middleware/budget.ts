@@ -55,3 +55,10 @@ export const validateBudgetInput = async (req: Request, res: Response, next: Nex
         .run(req)
     next()
 }
+
+export function hasAccess(req: Request, res: Response, next: NextFunction) {
+    if (req.user.id !== req.budget.userId) {
+        return res.status(401).json({ error: "Access denied" })
+    }
+    next()
+}

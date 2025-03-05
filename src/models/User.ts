@@ -15,7 +15,7 @@ class User extends Model {
 
     @AllowNull(false)
     @Column({
-        type: DataType.STRING(60)
+        type: DataType.STRING(100)
     })
     declare password: string;
 

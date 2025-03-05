@@ -3,13 +3,13 @@ import Budget from '../models/Budget'
 import Expense from '../models/Expense'
 
 
-
 export class BudgetController {
     static getAll = async (req: Request, res: Response) => {
         try {
             const budgets = await Budget.findAll({
                 order: [['createdAt', 'DESC']],
-                // TODO: Filter by user
+                // Filter budgets by user
+                where: { userId: req.user.id }
             })
             res.json(budgets)
         } catch (error) {
@@ -22,6 +22,7 @@ export class BudgetController {
     static create = async (req: Request, res: Response) => {
         try {
             const budget = new Budget(req.body)
+            budget.userId = req.user.id
             await budget.save()
             res.status(201).json("Budget created")
         } catch (error) {
@@ -34,7 +35,7 @@ export class BudgetController {
         try {
             // Include expenses in the response for the budget
             const budget = await Budget.findByPk(req.budget.id,{
-                include: [Expense]
+                include: [Expense],
             })
             res.json(budget)
         } catch (error) {

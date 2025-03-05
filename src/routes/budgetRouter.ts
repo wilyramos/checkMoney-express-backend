@@ -1,19 +1,24 @@
 import { Router } from "express";
 import { BudgetController } from "../controllers/BudgetController";
 import { handleInputErrors } from "../middleware/validation";
-import { validateBudgetExists, validateBudgetId, validateBudgetInput } from "../middleware/budget";
+import { hasAccess, validateBudgetExists, validateBudgetId, validateBudgetInput } from "../middleware/budget";
 import { create } from "axios";
 import Expense from "../models/Expense";
 import { ExpensesController } from "../controllers/ExpenseController";
 import { validateExpenseInput } from "../middleware/expense";
 import { validateExpenseId } from "../middleware/expense";
 import { validateExpenseExists } from "../middleware/expense";
+import { authenticate } from "../middleware/auth";
 
 const router = Router();
 
+// Use the authenticate middleware for all routes
+router.use(authenticate);  // -<> req.user
+
 // Validate budgetId parameter for all routes
 router.param('budgetId', validateBudgetId);
-router.param('budgetId', validateBudgetExists);
+router.param('budgetId', validateBudgetExists); // req.budget
+router.param('budgetId', hasAccess);
 
 // Validate expenseId parameter for all routes
 router.param('expenseId', validateExpenseId);

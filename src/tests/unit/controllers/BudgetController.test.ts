@@ -1,14 +1,14 @@
 import { createRequest, createResponse } from "node-mocks-http"
 import { budgets } from "../../mocks/budget"
 import { BudgetController } from "../../../controllers/BudgetController"
-import Budget from "../../../models/Budget"
 import Expense from "../../../models/Expense"
+import Budget from "../../../models/Budget"
 
-jest.mock('../../models/Budget', () => ({
+jest.mock('../../../models/Budget', () => ({
     findAll: jest.fn(),
     create: jest.fn(),
     findByPk: jest.fn(),
-    update: jest.fn(),
+    // update: jest.fn()
 }))
 
 
@@ -211,7 +211,7 @@ describe('BudgetController.getById', () => {
 describe('BudgetController.updateById', () => {
     it('Shold update the budget and return a success message', async () => {
         const budgetMock = {
-            update: jest.fn().mockReturnValue(true)
+            update: jest.fn().mockResolvedValue(true)
         }
 
         const req = createRequest({

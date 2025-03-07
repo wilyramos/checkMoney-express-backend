@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server, { connectDB } from '../../server';
+import server from '../../server';
 import { AuthController } from '../../controllers/AuthController';
 
 
@@ -55,21 +55,36 @@ describe('Authtentication - Create Account', () => {
         expect(createAccountMock).not.toHaveBeenCalled()
     })
 
-    it('Should return 201 when account is created', async () => {
+    it('Should register a new user succesfully', async () => {
 
         const userData = {
             name: 'test',
             email: 'test@test.com',
-            password: 'testpassword'
+            password: 'password'
         }
         const response = await request(server)
                             .post('/api/auth/create-account')
                             .send(userData)
         
-        const createAccountMock = jest.spyOn(AuthController, 'createAccount')
-
-        expect(response.status).toBe(201)
-        
-
+        expect(response.status).toBe(201);
+        expect(response.status).not.toBe(400);
+        expect(response.body).not.toHaveProperty('errors')
     })
+
+    it('Should return 409 when email is already in use', async () => {
+        const userData = {
+            name: 'test',
+            email: 'test@test.com',
+            password: 'password'
+        }
+        const response = await request(server)
+                            .post('/api/auth/create-account')
+                            .send(userData)
+
+        expect(response.status).toBe(409);
+        expect(response.body).toHaveProperty('error')
+        expect(response.body.error).toBe('Email already in use')
+        expect(response.status).not.toBe(201);
+        expect(response.status).not.toBe(400);
+    })  
 })

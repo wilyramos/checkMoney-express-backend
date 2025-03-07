@@ -1,7 +1,21 @@
+import { db } from '../config/db'
+import { exit } from 'node:process'
+import 'colors'
 
-const clearData = () => {
+const clearData = async () => {
 
-    console.log('clearData')
+    try {
+        await db.sync({ force: true })
+        console.log('Base de datos eliminada'.green)
+        exit(0)
+    } catch (error) {
+        console.log('Error al conectar a la base de datos'.red)
+        // console.log(error)
+        exit(1)
+    }
+    
 }
 
-clearData()
+if (process.argv[2] === '--clear') {
+    clearData()
+}

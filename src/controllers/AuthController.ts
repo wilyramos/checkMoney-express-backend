@@ -31,7 +31,7 @@ export class AuthController {
             })
             res.status(201).json('Account created successfully')
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             res.status(500).json({ error: 'Error creating account' })
         }
     }
@@ -138,7 +138,7 @@ export class AuthController {
         const { id } = req.user
 
         const user = await User.findByPk(id)
-        
+
         const isPasswordCorrect = await comparePassword(current_password, user.password)
 
         if (!isPasswordCorrect) {

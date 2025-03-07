@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import { hashPassword } from '../utils/auth';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
 import { comparePassword } from '../utils/auth';
 import { generateJWT } from '../utils/jwt';
-
 
 export class AuthController {
     static createAccount = async (req: Request, res: Response) => {
@@ -21,7 +19,7 @@ export class AuthController {
         }
 
         try {
-            const user = new User(req.body)
+            const user = await User.create(req.body)
             user.password = await hashPassword(password)
             user.token = generateToken()
             await user.save()
@@ -31,7 +29,7 @@ export class AuthController {
                 email: user.email,
                 token: user.token
             })
-            res.json('Account created successfully')
+            res.status(201).json('Account created successfully')
         } catch (error) {
             console.log(error)
             res.status(500).json({ error: 'Error creating account' })
@@ -64,13 +62,15 @@ export class AuthController {
         }
 
         // Check if user is confirmed
-        (!user.confirmed) && res.status(403).json({ error: 'User not confirmed' })
+        if (!user.confirmed) {
+            return res.status(403).json({ error: 'Account not confirmed' })
+        }
 
         // check if the password is correct
 
         const isPasswordCorrect = await comparePassword(password, user.password)
         if (!isPasswordCorrect) {
-            return res.status(403).json({ error: 'Invalid password' })
+            return res.status(401).json({ error: 'Invalid password' })
         }
 
         // Generate token

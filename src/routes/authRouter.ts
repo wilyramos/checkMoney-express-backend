@@ -16,7 +16,7 @@ router.post('/create-account',
         .notEmpty().withMessage('Name is required'),
 
     body('password')
-        .isLength({ min: 6 }).withMessage('Passwor must be at least 6 characters'),
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 
     body('email')
         .isEmail().withMessage('Email is not valid'),

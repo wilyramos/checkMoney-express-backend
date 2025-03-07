@@ -21,7 +21,15 @@ export class AuthController {
         try {
             const user = await User.create(req.body)
             user.password = await hashPassword(password)
-            user.token = generateToken()
+            const token = generateToken()
+
+
+            // This is only for testing purposes
+            if(process.env.NODE_ENV !== 'production') {
+                globalThis.cashTrackerConfirmationToken = token
+            }
+
+            user.token = token;
             await user.save()
 
             await AuthEmail.sendConfirmationEmail({
@@ -42,7 +50,7 @@ export class AuthController {
 
         const user = await User.findOne({ where: { token: token } })
         if (!user) {
-            return res.status(404).json({ error: 'Invalid token' })
+            return res.status(401).json({ error: 'Invalid token' })
         }
 
         user.confirmed = true

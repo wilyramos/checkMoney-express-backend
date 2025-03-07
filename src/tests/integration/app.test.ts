@@ -88,3 +88,44 @@ describe('Authtentication - Create Account', () => {
         expect(response.status).not.toBe(400);
     })  
 })
+
+describe('Authtentication - Confirm Account', () => {
+
+    it('Should display validation errors when token is empty or otken is not valid', async () => {
+
+        const response = await request(server)
+                            .post('/api/auth/confirm-account')
+                            .send({
+                                token: 'not_valid'
+                            })
+
+        expect(response.status).toBe(400)
+        expect(response.body).toHaveProperty('errors')
+        expect(response.body.errors).toHaveLength(1)
+        expect(response.body.errors[0].msg).toBe('Invalid token')
+    })
+
+    it('Should display error when token is not found', async () => {
+        
+        const response = await request(server)
+                            .post('/api/auth/confirm-account')
+                            .send({
+                                token: "123456"
+                            })
+        expect(response.status).toBe(401)
+        expect(response.body).toHaveProperty('error')
+        expect(response.body.error).toBe('Invalid token')
+        expect(response.status).not.toBe(200)
+    })
+
+    it('Should confirm account successfully', async () => {
+
+        const token = globalThis.cashTrackerConfirmationToken
+        const response = await request(server)
+                            .post('/api/auth/confirm-account')
+                            .send({ token })
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual('Account confirmed')
+        expect(response.status).not.toBe(401)
+    })
+})

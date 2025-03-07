@@ -167,8 +167,9 @@ describe('AuthController.login', () => {
         await AuthController.login(req, res);
 
         const data = res._getJSONData();
+
         expect(res.statusCode).toBe(200);
-        expect(data.token).toBe(fakeJWT);
+        expect(data).toEqual(fakeJWT);
         expect(generateJWT).toHaveBeenCalledWith(userMock.id);
 
        

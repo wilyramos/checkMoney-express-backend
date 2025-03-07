@@ -84,9 +84,7 @@ export class AuthController {
         // Generate token
 
         const token = generateJWT(user.id)
-        res.json({ token })
-
-
+        res.json(token)
     }
 
     static forgotPassword = async (req: Request, res: Response) => {

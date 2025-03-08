@@ -1,9 +1,9 @@
-import request from 'supertest';
-import server from '../../server';
-import { AuthController } from '../../controllers/AuthController';
-import User from '../../models/User';
-import * as authUtils from '../../utils/auth';
-import * as jwtUtils from '../../utils/jwt';
+import request from 'supertest'
+import server from '../../server'
+import { AuthController } from '../../controllers/AuthController'
+import User from '../../models/User'
+import * as authUtils from '../../utils/auth'
+import * as jwtUtils from '../../utils/jwt'
 
 describe('Authtentication - Create Account', () => {
 
@@ -276,3 +276,4 @@ describe('Authtentication - Login', () => {
 
     })
 })
+

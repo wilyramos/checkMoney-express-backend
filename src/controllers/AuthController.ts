@@ -22,16 +22,13 @@ export class AuthController {
             const user = await User.create(req.body)
             user.password = await hashPassword(password)
             const token = generateToken()
+            user.token = token;
 
-
-            // This is only for testing purposes
             if(process.env.NODE_ENV !== 'production') {
-                globalThis.cashTrackerConfirmationToken = token
+                globalThis.cashTrackrConfirmationToken = token
             }
 
-            user.token = token;
             await user.save()
-
             await AuthEmail.sendConfirmationEmail({
                 name: user.name,
                 email: user.email,

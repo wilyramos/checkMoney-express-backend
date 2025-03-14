@@ -29,11 +29,14 @@ export class AuthController {
             }
 
             await user.save()
-            await AuthEmail.sendConfirmationEmail({
-                name: user.name,
-                email: user.email,
-                token: user.token
-            })
+
+            // Email confirmation
+            
+            // await AuthEmail.sendConfirmationEmail({
+            //     name: user.name,
+            //     email: user.email,
+            //     token: user.token
+            // })
             res.status(201).json('Account created successfully')
         } catch (error) {
             // console.log(error)

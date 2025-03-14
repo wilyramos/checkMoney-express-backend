@@ -9,6 +9,7 @@ import { validateExpenseInput } from "../middleware/expense";
 import { validateExpenseId } from "../middleware/expense";
 import { validateExpenseExists } from "../middleware/expense";
 import { authenticate } from "../middleware/auth";
+import { belongsToBudget } from "../middleware/expense";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.param('budgetId', hasAccess);
 // Validate expenseId parameter for all routes
 router.param('expenseId', validateExpenseId);
 router.param('expenseId', validateExpenseExists);
+router.param('expenseId', belongsToBudget);
 
 router.get("/", 
     BudgetController.getAll

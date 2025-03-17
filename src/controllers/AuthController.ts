@@ -24,14 +24,14 @@ export class AuthController {
             const token = generateToken()
             user.token = token;
 
-            if(process.env.NODE_ENV !== 'production') {
+            if (process.env.NODE_ENV !== 'production') {
                 globalThis.cashTrackrConfirmationToken = token
             }
 
             await user.save()
 
             // Email confirmation
-            
+
             // await AuthEmail.sendConfirmationEmail({
             //     name: user.name,
             //     email: user.email,
@@ -170,4 +170,25 @@ export class AuthController {
         res.json('Password is correct')
     }
 
+    static updateProfile = async (req: Request, res: Response) => {
+
+        const { name, email } = req.body
+        const { id } = req.user
+        const user = await User.findByPk(id)
+
+        try {
+
+            const emailExists = await User.findOne({ where: { email } })
+            if (emailExists && emailExists.id !== id) {
+                return res.status(409).json({ error: 'Email already in use' })
+            }
+
+            await User.update({ name, email }, { where: { id } })
+            res.json('Profile updated successfully')
+
+        } catch (error) {
+            return res.status(500).json({ error: 'Error updating profile' })
+        }
+
+    }
 }
